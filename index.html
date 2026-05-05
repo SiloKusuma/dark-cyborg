@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Darkcyborg - Kumpulan Prompt Istimewa untuk AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #0d0d0d;
+            --bg-card: #141414;
+            --accent-indigo: #60a5fa;
+            --accent-violet: #93c5fd;
+            --accent-cyan: #bae6fd;
+            --text-primary: #ffffff;
+            --text-secondary: #a3a3a3;
+            --text-muted: #525252;
+            --font-heading: 'Outfit', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #network-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 20px 0;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #60a5fa, #93c5fd, #bae6fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav {
+            display: flex;
+            gap: 32px;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #60a5fa, #93c5fd);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--text-primary);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+        }
+
+        .hero h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 50%, #bae6fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--text-secondary);
+            max-width: 600px;
+            line-height: 1.7;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            font-size: 24px;
+        }
+
+        .scroll-indicator i {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text-muted);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        .prompts-section {
+            padding: 80px 0 120px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 16px 24px 16px 56px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: var(--font-body);
+            transition: all 0.3s ease;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: var(--accent-indigo);
+            box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.15);
+        }
+
+        .search-container input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+
+        .category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 48px;
+        }
+
+        .category-tab {
+            padding: 12px 24px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 100px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: var(--font-body);
+        }
+
+        .category-tab:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .category-tab.active {
+            background: linear-gradient(135deg, #60a5fa, #93c5fd);
+            border-color: transparent;
+            color: white;
+        }
+
+        .prompts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 24px;
+        }
+
+        .prompt-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .prompt-card::before {
+            display: none;
+        }
+
+        .prompt-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .prompt-card.hidden {
+            display: none;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .category-badge {
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .category-badge.chatgpt {
+            background: rgba(96, 165, 250, 0.15);
+            color: #60a5fa;
+        }
+
+        .category-badge.midjourney {
+            background: rgba(147, 197, 253, 0.15);
+            color: #93c5fd;
+        }
+
+        .category-badge.writing {
+            background: rgba(191, 219, 254, 0.15);
+            color: #bfdbfe;
+        }
+
+        .category-badge.code {
+            background: rgba(96, 165, 250, 0.15);
+            color: #60a5fa;
+        }
+
+        .category-badge.video {
+            background: rgba(147, 197, 253, 0.15);
+            color: #93c5fd;
+        }
+
+        .category-badge.audio {
+            background: rgba(191, 219, 254, 0.15);
+            color: #bfdbfe;
+        }
+
+        .copy-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-indigo);
+            border-color: var(--accent-indigo);
+            color: white;
+        }
+
+        .copy-btn i {
+            font-size: 18px;
+        }
+
+        .copy-btn.copied {
+            background: #60a5fa;
+            border-color: #60a5fa;
+            color: white;
+        }
+
+        .copy-tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-secondary);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover .copy-tooltip {
+            opacity: 1;
+            bottom: calc(100% + 12px);
+        }
+
+        .prompt-title {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .prompt-content {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            background: var(--bg-secondary);
+            padding: 16px;
+            border-radius: 12px;
+            max-height: 120px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .prompt-content::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(transparent, var(--bg-secondary));
+        }
+
+        .prompt-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .prompt-tag {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #93c5fd;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 32px;
+        }
+
+        .burger-menu {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+            z-index: 110;
+        }
+
+        .burger-menu span {
+            width: 24px;
+            height: 2px;
+            background: #a3a3a3;
+            transition: all 0.3s ease;
+        }
+
+        .burger-menu.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .burger-menu.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger-menu.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.98);
+            z-index: 105;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 32px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mobile-nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 500;
+            font-family: var(--font-heading);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+            }
+
+            .burger-menu {
+                display: flex;
+            }
+
+            .mobile-nav {
+                display: flex;
+            }
+
+            .prompts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .category-tabs {
+                gap: 8px;
+            }
+
+            .category-tab {
+                padding: 10px 16px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .prompt-card {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .prompt-card:nth-child(1) { animation-delay: 0.1s; }
+        .prompt-card:nth-child(2) { animation-delay: 0.15s; }
+        .prompt-card:nth-child(3) { animation-delay: 0.2s; }
+        .prompt-card:nth-child(4) { animation-delay: 0.25s; }
+        .prompt-card:nth-child(5) { animation-delay: 0.3s; }
+        .prompt-card:nth-child(6) { animation-delay: 0.35s; }
+    </style>
+</head>
+<body>
+    <canvas id="network-canvas"></canvas>
+
+    <header>
+        <div class="container header-content">
+            <div class="logo">Darkcyborg</div>
+            <nav>
+                <a href="#prompts">Semua Prompt</a>
+                <a href="#about">Tentang</a>
+                <a href="#contact">Kontak</a>
+            </nav>
+            <div class="burger-menu" onclick="toggleMobileNav()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <nav class="mobile-nav" id="mobileNav">
+        <a href="#prompts" onclick="toggleMobileNav()">Semua Prompt</a>
+        <a href="about.html" onclick="toggleMobileNav()">Tentang</a>
+        <a href="#contact" onclick="toggleMobileNav()">Kontak</a>
+    </nav>
+
+    <section class="hero">
+        <h1>
+            Kumpulan Prompt<br>
+            <span class="gradient-text">Istimewa untuk AI</span>
+        </h1>
+        <p>
+            Temukan koleksi prompt premium untuk ChatGPT, Midjourney, dan berbagai AI lainnya. 
+            Tingkatkan produktivitas dan kreativitas dengan prompt pilihan kami.
+        </p>
+        <div class="scroll-indicator">
+            <i class="bi bi-chevron-down text-gray-500"></i>
+        </div>
+    </section>
+
+    <section class="prompts-section" id="prompts">
+        <div class="container">
+            <div class="section-header">
+                <h2>Jelajahi Prompt</h2>
+            </div>
+
+            <div class="search-container">
+                <i class="bi bi-search"></i>
+                <input type="text" id="searchInput" placeholder="Cari prompt...">
+            </div>
+
+            <div class="category-tabs">
+                <button class="category-tab active" data-category="all">Semua</button>
+                <button class="category-tab" data-category="chatgpt">💬 ChatGPT</button>
+                <button class="category-tab" data-category="midjourney">🎨 Midjourney</button>
+                <button class="category-tab" data-category="writing">📝 Writing</button>
+                <button class="category-tab" data-category="code">💻 Code</button>
+                <button class="category-tab" data-category="video">🎬 Video</button>
+                <button class="category-tab" data-category="audio">🎵 Audio</button>
+            </div>
+
+            <div class="prompts-grid" id="promptsGrid"></div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 Darkcyborg. Dibuat dengan ❤️ untuk komunitas AI Indonesia.</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMobileNav() {
+            const burger = document.querySelector('.burger-menu');
+            const mobileNav = document.getElementById('mobileNav');
+            burger.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+        }
+
+        const prompts = [
+            {
+                id: 1,
+                title: "AI Writing Partner",
+                category: "chatgpt",
+                content: "Act as an expert writing mentor. Analyze the provided text for clarity, structure, and flow. Provide specific, actionable suggestions to improve it. Offer examples where relevant. Ask clarifying questions before making changes. Response in Indonesian with English technical terms when necessary.",
+                tags: ["writing", "mentor", "editing"]
+            },
+            {
+                id: 2,
+                title: "Cyberpunk City Scenery",
+                category: "midjourney",
+                content: "Hyper-realistic cyberpunk cityscape at night, neon-lit skyscrapers reflecting in rainy streets, holographic advertisements, flying vehicles, dramatic volumetric lighting, cyberpunk aesthetic, 8k resolution, ultra-detailed, cinematic composition, blade runner 2049 inspired, --ar 16:9 --v 6",
+                tags: ["cityscape", "night", "neon"]
+            },
+            {
+                id: 3,
+                title: "Professional Code Reviewer",
+                category: "chatgpt",
+                content: "Act as a senior software engineer conducting a thorough code review. Analyze the provided code for: 1) Bug detection 2) Security vulnerabilities 3) Performance issues 4) Code quality and best practices 5) Documentation needs. Provide specific line-by-line feedback with severity levels. Suggest concrete improvements with code examples. Response in Indonesian.",
+                tags: ["code", "review", "engineering"]
+            },
+            {
+                id: 4,
+                title: "Blog Article Generator",
+                category: "writing",
+                content: "Create a comprehensive, SEO-optimized blog article. Topic: [INSERT TOPIC]. Requirements: - Engaging title with keywords - Introduction hook - H2 headings with keywords - 3-5 paragraphs per section - Bullet points where appropriate - Natural keyword integration - Call to action. Target word count: 1500 words. Tone: Professional yet conversational. Language: Indonesian.",
+                tags: ["blog", "SEO", "article"]
+            },
+            {
+                id: 5,
+                title: "Docker Compose Expert",
+                category: "code",
+                content: " Act as a DevOps engineer specializing in containerization. Create a production-ready docker-compose.yml for [APPLICATION TYPE]. Include: - Multi-service architecture - Environment variables - Volume mounts - Network configuration - Health checks - Resource limits - Restart policies. Explain each service and configuration. Use latest stable versions.",
+                tags: ["devops", "docker", "containers"]
+            },
+            {
+                id: 6,
+                title: "Abstract 3D Art",
+                category: "midjourney",
+                content: "Abstract 3D shapes composition, floating geometric forms, iridescent materials, soft gradient backgrounds, pastel color palette, glass and metal textures, ray tracing, unreal engine 5 render, macro photography depth of field, soft studio lighting, minimalist aesthetic, --ar 4:5 --v 6 --stylize 250",
+                tags: ["abstract", "3D", "geometric"]
+            },
+            {
+                id: 7,
+                title: "Python Data Analysis",
+                category: "code",
+                content: "Act as a data scientist. Write a complete Python script for [DATA ANALYSIS TASK]. Use pandas, numpy, matplotlib/seaborn. Include: - Data loading and cleaning - Exploratory analysis - Statistical tests - Visualization - Key insights. Add inline comments explaining each step. Handle edge cases and errors.",
+                tags: ["python", "data", "analysis"]
+            },
+            {
+                id: 8,
+                title: "Product Description Writer",
+                category: "writing",
+                content: "Write compelling product descriptions for e-commerce. Product: [PRODUCT NAME]. Include: - Attention-grabbing headline - Key features (bullet points) - Benefits for customers - Usage instructions - Social proof elements. Tone: Persuasive, benefit-focused. Word count: 150-200 words. SEO keywords included naturally.",
+                tags: ["ecommerce", "product", "marketing"]
+            },
+            {
+                id: 9,
+                title: "API Documentation",
+                category: "code",
+                content: "Create comprehensive API documentation for [API ENDPOINT]. Include: - Endpoint URL and method - Request parameters with types - Request body schema - Response format - Success/error codes - Example requests in cURL - Authentication requirements. Use OpenAPI 3.0 format. Be precise and technical.",
+                tags: ["API", "documentation", "REST"]
+            },
+            {
+                id: 10,
+                title: "Movie Scene Recreation",
+                category: "midjourney",
+                content: "Faithful recreation of iconic movie scenes, [MOVIE NAME] [SCENE DESCRIPTION], professional cinematography, film grain, 35mm lens, anamorphic flares, director [DIRECTOR NAME] style, movie still, golden hour lighting, authentic costume design, --ar 2.35:1 --v 6",
+                tags: ["movie", "recreate", "cinematic"]
+            },
+            {
+                id: 11,
+                title: "Video Script Editor",
+                category: "video",
+                content: "Act as a professional video script editor. Review and improve this video script: [SCRIPT CONTENT]. Evaluate: - Hook and opening - Pacing and rhythm - Audience engagement - Call to actions - Overall flow. Provide marked feedback and rewrite suggestions. Target video length: [DURATION] minutes. Response in Indonesian.",
+                tags: ["video", "script", "editing"]
+            },
+            {
+                id: 12,
+                title: "Music Production Prompt",
+                category: "audio",
+                content: "Create a detailed music production prompt for AI music generators like Suno or Udio. Style: [GENRE]. Mood: [MOOD]. Tempo: [BPM]. Key: [KEY]. Structure: Intro - Verse - Chorus - Bridge - Outro. Include: - Instrument descriptions - Chord progressions - Melody notes - Production techniques - Reference artists. Be specific and detailed.",
+                tags: ["music", "production", "audio"]
+            },
+            {
+                id: 13,
+                title: "System Design Architect",
+                category: "code",
+                content: "Design a scalable system architecture for [APPLICATION TYPE]. Include: - High-level diagram description - Database selection and schema - API design - Caching strategy - Load balancing - Security measures - Scalability considerations. Use modern tech stack. Explain trade-offs.",
+                tags: ["architecture", "system", "design"]
+            },
+            {
+                id: 14,
+                title: "Email Marketing Sequence",
+                category: "writing",
+                content: "Create a 5-email marketing sequence for [PRODUCT/SERVICE]. Email 1: Welcome/Introduction - Email 2: Problem awareness - Email 3: Solution presentation - Email 4: Social proof - Email 5: Urgency/CTA. Each email: Subject line, Preheader, Body (100-150 words), CTA. Tone: Professional but personal. Conversion-focused.",
+                tags: ["email", "marketing", "conversion"]
+            },
+            {
+                id: 15,
+                title: "Portrait Photography",
+                category: "midjourney",
+                content: "Professional portrait photography, [SUBJECT DESCRIPTION], soft natural window lighting, shallow depth of field, canon 85mm f/1.4, skin retouching, neutral background, confident expression, fashion editorial style, 8k, professional color grading, --ar 3:4 --v 6",
+                tags: ["portrait", "photography", "professional"]
+            },
+            {
+                id: 16,
+                title: "React Component Generator",
+                category: "code",
+                content: "Create a production-ready React component for [COMPONENT NAME]. Requirements: - TypeScript - Functional component with hooks - Props interface - Responsive design - Accessibility (ARIA) - Error boundaries - Unit tests template - CSS modules or styled-components. Use latest React patterns. Include prop descriptions.",
+                tags: ["react", "component", "typescript"]
+            }
+        ];
+
+        // Network Background Animation
+        const canvas = document.getElementById('network-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let nodes = [];
+        const nodeCount = 80;
+        const connectionDistance = 150;
+        const nodeRadius = 2;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        function createNodes() {
+            nodes = [];
+            for (let i = 0; i < nodeCount; i++) {
+                nodes.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    radius: Math.random() * 2 + 1
+                });
+            }
+        }
+
+        function drawNodes() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw connections
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < connectionDistance) {
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        const opacity = 1 - distance / connectionDistance;
+                        ctx.strokeStyle = `rgba(96, 165, 250, ${opacity * 0.15})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Draw nodes
+            nodes.forEach(node => {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(96, 165, 250, 0.6)';
+                ctx.fill();
+            });
+        }
+
+        function updateNodes() {
+            nodes.forEach(node => {
+                node.x += node.vx;
+                node.y += node.vy;
+
+                if (node.x < 0 || node.x > width) node.vx *= -1;
+                if (node.y < 0 || node.y > height) node.vy *= -1;
+            });
+        }
+
+        function animate() {
+            updateNodes();
+            drawNodes();
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            resize();
+            createNodes();
+        });
+
+        resize();
+        createNodes();
+        animate();
+
+        // Render Prompts
+        function renderPrompts(filteredPrompts) {
+            const grid = document.getElementById('promptsGrid');
+            grid.innerHTML = '';
+
+            filteredPrompts.forEach((prompt, index) => {
+                const card = document.createElement('div');
+                card.className = 'prompt-card';
+                card.style.animationDelay = `${index * 0.05}s`;
+                card.dataset.category = prompt.category;
+                card.dataset.title = prompt.title.toLowerCase();
+                card.dataset.content = prompt.content.toLowerCase();
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="category-badge ${prompt.category}">${prompt.category === 'chatgpt' ? '💬 ChatGPT' : prompt.category === 'midjourney' ? '🎨 Midjourney' : prompt.category === 'writing' ? '📝 Writing' : prompt.category === 'code' ? '💻 Code' : prompt.category === 'video' ? '🎬 Video' : '🎵 Audio'}</span>
+                        <button class="copy-btn" data-content="${prompt.content.replace(/"/g, '&quot;')}">
+                            <i class="bi bi-clipboard"></i>
+                            <span class="copy-tooltip">Salin prompt</span>
+                        </button>
+                    </div>
+                    <h3 class="prompt-title">${prompt.title}</h3>
+                    <div class="prompt-content">${prompt.content}</div>
+                    <div class="prompt-tags">
+                        ${prompt.tags.map(tag => `<span class="prompt-tag">#${tag}</span>`).join('')}
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            // Add copy functionality
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const content = this.dataset.content.replace(/&quot;/g, '"');
+                    navigator.clipboard.writeText(content).then(() => {
+                        this.classList.add('copied');
+                        const tooltip = this.querySelector('.copy-tooltip');
+                        tooltip.textContent = 'Tersalin!';
+                        
+                        setTimeout(() => {
+                            this.classList.remove('copied');
+                            tooltip.textContent = 'Salin prompt';
+                        }, 2000);
+                    });
+                });
+            });
+        }
+
+        // Initial render
+        renderPrompts(prompts);
+
+        // Category filter
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                const category = this.dataset.category;
+                const filtered = category === 'all' 
+                    ? prompts 
+                    : prompts.filter(p => p.category === category);
+
+                renderPrompts(filtered);
+            });
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            const activeCategory = document.querySelector('.category-tab.active').dataset.category;
+
+            let filtered = prompts;
+
+            if (activeCategory !== 'all') {
+                filtered = filtered.filter(p => p.category === activeCategory);
+            }
+
+            if (query) {
+                filtered = filtered.filter(p => 
+                    p.title.toLowerCase().includes(query) || 
+                    p.content.toLowerCase().includes(query) ||
+                    p.tags.some(tag => tag.toLowerCase().includes(query))
+                );
+            }
+
+            renderPrompts(filtered);
+        });
+    </script>
+</body>
+</html>
