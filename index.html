@@ -564,10 +564,530 @@
         .prompt-card:nth-child(4) { animation-delay: 0.25s; }
         .prompt-card:nth-child(5) { animation-delay: 0.3s; }
         .prompt-card:nth-child(6) { animation-delay: 0.35s; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .modal-header h3 {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: #f87171;
+            border-color: #f87171;
+            color: #000000;
+        }
+
+        .modal-btn-settings:hover {
+            background: #f59e0b;
+            border-color: #f59e0b;
+            color: #000000;
+        }
+
+        .modal-btn-chat:hover {
+            background: #10b981;
+            border-color: #10b981;
+            color: #000000;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-content {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 16px;
+            border-radius: 12px;
+            line-height: 1.7;
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .modal-content:focus {
+            outline: none;
+            border-color: var(--accent-indigo);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-family: var(--font-body);
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(135deg, #60a5fa, #93c5fd);
+            border: none;
+            color: #000000;
+        }
+
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .modal-btn-secondary {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .modal-btn-secondary:hover {
+            background: var(--bg-card);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-footer {
+            padding: 16px 24px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-category {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .modal-category.chatgpt {
+            background: rgba(96, 165, 250, 0.15);
+            color: #60a5fa;
+        }
+
+        .modal-category.midjourney {
+            background: rgba(147, 197, 253, 0.15);
+            color: #93c5fd;
+        }
+
+        .modal-category.writing {
+            background: rgba(191, 219, 254, 0.15);
+            color: #bfdbfe;
+        }
+
+        .modal-category.code {
+            background: rgba(96, 165, 250, 0.15);
+            color: #60a5fa;
+        }
+
+        .modal-category.video {
+            background: rgba(147, 197, 253, 0.15);
+            color: #93c5fd;
+        }
+
+        .modal-category.audio {
+            background: rgba(191, 219, 254, 0.15);
+            color: #bfdbfe;
+        }
+
+        .modal-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .modal-tag {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .gap-2 {
+            gap: 8px;
+        }
+
+        .settings-modal .modal-header {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .settings-modal .modal-body {
+            padding-top: 16px;
+        }
+
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .settings-select {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: var(--font-body);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .settings-select:focus {
+            outline: none;
+            border-color: var(--accent-indigo);
+        }
+
+        .settings-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: var(--font-mono);
+            transition: all 0.3s ease;
+        }
+
+        .settings-input:focus {
+            outline: none;
+            border-color: var(--accent-indigo);
+        }
+
+        .settings-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .settings-btn {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #60a5fa, #93c5fd);
+            border: none;
+            border-radius: 12px;
+            color: #000000;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: var(--font-body);
+        }
+
+        .settings-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .settings-note {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .chat-modal .modal-body {
+            max-height: 60vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-right: 8px;
+        }
+
+        .chat-message {
+            max-width: 85%;
+            padding: 14px 16px;
+            border-radius: 16px;
+            line-height: 1.6;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+
+        .chat-message.user {
+            align-self: flex-end;
+            background: var(--accent-indigo);
+            color: #000000;
+        }
+
+        .chat-message.assistant {
+            align-self: flex-start;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 14px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: var(--font-body);
+            resize: none;
+            min-height: 48px;
+            max-height: 120px;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--accent-indigo);
+        }
+
+        .chat-send {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #60a5fa, #93c5fd);
+            border: none;
+            border-radius: 12px;
+            color: #000000;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+            align-self: flex-end;
+        }
+
+        .chat-send:hover {
+            transform: translateY(-2px);
+        }
+
+        .chat-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .chat-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text-secondary);
+        }
+
+        .chat-loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .chat-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .chat-empty i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
     <canvas id="network-canvas"></canvas>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Prompt Title</h3>
+                <div class="flex gap-2">
+                    <button class="modal-close modal-btn-settings" onclick="openSettingsModal()" title="Pengaturan API">
+                        <i class="bi bi-gear"></i>
+                    </button>
+                    <button class="modal-close modal-btn-chat" onclick="openChatModal()" title="Chat dengan AI">
+                        <i class="bi bi-chat-dots"></i>
+                    </button>
+                    <button class="modal-close" onclick="closeModal()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-label">Prompt Content</div>
+                <div class="modal-content" id="modalContent" contenteditable="true"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="modal-tags" id="modalTags"></div>
+                <span class="modal-category" id="modalCategory">Category</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal settings-modal">
+            <div class="modal-header">
+                <h3>Pengaturan API</h3>
+                <button class="modal-close" onclick="closeSettingsModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-group">
+                    <label class="settings-label">Pilih Provider</label>
+                    <select class="settings-select" id="apiProvider">
+                        <option value="groq">Groq (Llama-3.3-70b)</option>
+                        <option value="openrouter">OpenRouter (DeepSeek V4)</option>
+                    </select>
+                </div>
+                <div class="settings-group">
+                    <label class="settings-label">API Key</label>
+                    <input type="password" class="settings-input" id="apiKey" placeholder="Masukkan API key di sini...">
+                </div>
+                <button class="settings-btn" onclick="saveApiSettings()">
+                    <i class="bi bi-check-lg"></i>
+                    Simpan Pengaturan
+                </button>
+                <p class="settings-note">API key disimpan di browser Anda secara lokal.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="chatModal">
+        <div class="modal chat-modal">
+            <div class="modal-header">
+                <h3>Chat AI</h3>
+                <button class="modal-close" onclick="closeChatModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-empty">
+                        <i class="bi bi-chat-dots"></i>
+                        <p>Kirim pesan untuk memulai percakapan dengan AI menggunakan prompt ini.</p>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <textarea class="chat-input" id="chatInput" placeholder="Tulis pesan..." rows="1"></textarea>
+                    <button class="chat-send" id="chatSend" onclick="sendChatMessage()">
+                        <i class="bi bi-send"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <header>
         <div class="container header-content">
@@ -871,6 +1391,13 @@
                 `;
 
                 grid.appendChild(card);
+
+                // Add click event to open modal
+                card.addEventListener('click', function(e) {
+                    if (!e.target.closest('.copy-btn')) {
+                        openModal(prompt);
+                    }
+                });
             });
 
             // Add copy functionality
@@ -929,6 +1456,238 @@
             }
 
             renderPrompts(filtered);
+        });
+
+        // Modal functions
+        function openModal(prompt) {
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            const modalCategory = document.getElementById('modalCategory');
+            const modalTags = document.getElementById('modalTags');
+
+            modalTitle.textContent = prompt.title;
+            modalContent.textContent = prompt.content;
+            
+            const categoryLabels = {
+                chatgpt: '💬 ChatGPT',
+                midjourney: '🎨 Midjourney',
+                writing: '📝 Writing',
+                code: '💻 Code',
+                video: '🎬 Video',
+                audio: '🎵 Audio'
+            };
+            modalCategory.textContent = categoryLabels[prompt.category] || prompt.category;
+            modalCategory.className = 'modal-category ' + prompt.category;
+
+            modalTags.innerHTML = prompt.tags.map(tag => `<span class="modal-tag">#${tag}</span>`).join('');
+
+            modalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modalOverlay = document.getElementById('modalOverlay');
+            modalOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Settings Modal
+        function openSettingsModal() {
+            const settingsModal = document.getElementById('settingsModal');
+            const provider = localStorage.getItem('apiProvider') || 'groq';
+            const apiKey = localStorage.getItem('apiKey') || '';
+            
+            document.getElementById('apiProvider').value = provider;
+            document.getElementById('apiKey').value = apiKey;
+            
+            settingsModal.classList.add('active');
+        }
+
+        function closeSettingsModal() {
+            const settingsModal = document.getElementById('settingsModal');
+            settingsModal.classList.remove('active');
+        }
+
+        function saveApiSettings() {
+            const provider = document.getElementById('apiProvider').value;
+            const apiKey = document.getElementById('apiKey').value;
+            
+            if (!apiKey.trim()) {
+                alert('Mohon masukkan API key!');
+                return;
+            }
+            
+            localStorage.setItem('apiProvider', provider);
+            localStorage.setItem('apiKey', apiKey);
+            
+            closeSettingsModal();
+            alert('Pengaturan API berhasil disimpan!');
+        }
+
+        // Chat Modal
+        let currentChatPrompt = '';
+
+        function openChatModal() {
+            const chatModal = document.getElementById('chatModal');
+            const modalContent = document.getElementById('modalContent');
+            currentChatPrompt = modalContent.textContent;
+            
+            chatModal.classList.add('active');
+        }
+
+        function closeChatModal() {
+            const chatModal = document.getElementById('chatModal');
+            chatModal.classList.remove('active');
+        }
+
+        async function sendChatMessage() {
+            const chatInput = document.getElementById('chatInput');
+            const chatMessages = document.getElementById('chatMessages');
+            const chatSend = document.getElementById('chatSend');
+            const message = chatInput.value.trim();
+            
+            if (!message) return;
+            
+            const provider = localStorage.getItem('apiProvider');
+            const apiKey = localStorage.getItem('apiKey');
+            
+            if (!apiKey) {
+                alert('Mohon atur API key terlebih dahulu!');
+                closeChatModal();
+                openSettingsModal();
+                return;
+            }
+
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-message user';
+            userMsg.textContent = message;
+            chatMessages.appendChild(userMsg);
+            
+            chatInput.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Show loading
+            chatSend.disabled = true;
+            const loading = document.createElement('div');
+            loading.className = 'chat-loading';
+            loading.innerHTML = '<i class="bi bi-arrow-repeat"></i> Mengirim...';
+            chatMessages.appendChild(loading);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                let apiUrl, model, headers, body;
+
+                if (provider === 'groq') {
+                    apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
+                    model = 'llama-3.3-70b-versatile';
+                    headers = {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    };
+                    body = JSON.stringify({
+                        model: model,
+                        messages: [
+                            { role: 'system', content: currentChatPrompt },
+                            { role: 'user', content: message }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 1024
+                    });
+                } else {
+                    apiUrl = 'https://openrouter.ai/api/v1/chat/completions';
+                    model = 'deepseek/deepseek-v4-flash';
+                    headers = {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json',
+                        'HTTP-Referer': window.location.href,
+                        'X-Title': 'Darkcyborg'
+                    };
+                    body = JSON.stringify({
+                        model: model,
+                        messages: [
+                            { role: 'system', content: currentChatPrompt },
+                            { role: 'user', content: message }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 1024
+                    });
+                }
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: body
+                });
+
+                const data = await response.json();
+                loading.remove();
+
+                if (data.choices && data.choices[0]) {
+                    const assistantMsg = document.createElement('div');
+                    assistantMsg.className = 'chat-message assistant';
+                    assistantMsg.textContent = data.choices[0].message.content;
+                    chatMessages.appendChild(assistantMsg);
+                } else if (data.error) {
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'chat-message assistant';
+                    errorMsg.textContent = 'Error: ' + data.error.message;
+                    chatMessages.appendChild(errorMsg);
+                } else {
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'chat-message assistant';
+                    errorMsg.textContent = 'Error: Tidak ada respons dari API';
+                    chatMessages.appendChild(errorMsg);
+                }
+
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            } catch (error) {
+                loading.remove();
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'chat-message assistant';
+                errorMsg.textContent = 'Error: ' + error.message;
+                chatMessages.appendChild(errorMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            chatSend.disabled = false;
+        }
+
+        // Enter to send
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendChatMessage();
+            }
+        });
+
+        // Close modal on overlay click
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('settingsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSettingsModal();
+            }
+        });
+
+        document.getElementById('chatModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeChatModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeSettingsModal();
+                closeChatModal();
+            }
         });
     </script>
 </body>
